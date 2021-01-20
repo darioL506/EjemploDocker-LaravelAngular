@@ -26,6 +26,8 @@ services:
       - VIRTUAL_HOST=prueba1.com
     networks:
       - net-prueba 
+    depends_on: 
+      - reverseproxy
   
   php-fpm:
     build: back/php-fpm
@@ -35,23 +37,37 @@ services:
     - ./back/my-cool-app:/application
     - ./back/php-fpm/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini
     networks:
-      - net-prueba    
+      - net-prueba   
+    depends_on: 
+      - reverseproxy
   
-#   db:
-#     image: mysql:5.7
-#     container_name: travellist-db
-#     restart: unless-stopped
-#     environment:
-#       MYSQL_DATABASE: ${DB_DATABASE}
-#       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-#       MYSQL_PASSWORD: ${DB_PASSWORD}
-#       MYSQL_USER: ${DB_USERNAME}
-#       SERVICE_TAGS: dev
-#       SERVICE_NAME: mysql
-#     volumes:
-#       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
-#     networks:
-#       - travellist
+  phpmyadmin:
+    build: back/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    networks:
+      - net-prueba 
+    depends_on: 
+      - db
+      - reverseproxy
+    environment: 
+      - VIRTUAL_HOST=phpmyadmin.com  
+    networks:
+      - net-prueba    
+    
+  db:
+    image: mariadb:10.5.8
+    container_name: database
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_PASSWORD: 1234
+      MYSQL_USER: admin      
+    # volumes:
+    #   - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - net-prueba
 
 networks:
   net-prueba:
