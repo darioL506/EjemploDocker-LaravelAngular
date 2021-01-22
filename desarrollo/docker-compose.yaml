@@ -28,11 +28,10 @@ services:
       - reverseproxy
   
   angular:
-    build: front/my-angular-project/
-    container_name: angular
-    working_dir: /app
+    build: front/
+    container_name: angular    
     volumes:
-      - .:/app
+      - ./front/my-angular-project/:/app
       - ./front/nginx.conf:/etc/nginx/conf.d/default.conf
     environment: 
       - VIRTUAL_HOST=prueba1.com
