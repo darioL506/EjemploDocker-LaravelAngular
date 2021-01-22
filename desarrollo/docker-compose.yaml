@@ -21,40 +21,28 @@ services:
     working_dir: /application
     volumes:
       - .:/application
-      - ./back/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      - net-prueba 
-    depends_on: 
-      - reverseproxy
-  
-  angular:
-    build: front/my-angular-project/
-    container_name: angular
-    working_dir: /app
-    volumes:
-      - .:/app
-      - ./front/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     environment: 
-      - VIRTUAL_HOST=prueba1.com
+      - VIRTUAL_HOST=bolsaTrabajo.com
     networks:
       - net-prueba 
     depends_on: 
       - reverseproxy
   
   php-fpm:
-    build: back/php-fpm
+    build: ./php-fpm
     container_name: php-fpm
     working_dir: /application
     volumes:
-    - ./back/my-cool-app:/application
-    - ./back/php-fpm/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini
+    - ./bolsa_trabajo_back:/application
+    - ./php-fpm/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini
     networks:
       - net-prueba   
     depends_on: 
       - reverseproxy
   
   phpmyadmin:
-    build: back/phpmyadmin
+    build: ./phpmyadmin
     container_name: phpmyadmin
     restart: always
     networks:
