@@ -15,9 +15,9 @@ services:
     restart: always
     privileged: true
   
-  webserver:
+  nginx-laravel:
     image: nginx:alpine
-    container_name: webserver
+    container_name: nginx-laravel
     working_dir: /application
     volumes:
       - .:/application
@@ -27,12 +27,11 @@ services:
     depends_on: 
       - reverseproxy
   
-  angular:
+  nginx-angular:
     build: front/
-    container_name: angular    
+    container_name: nginx-angular    
     volumes:
-      - ./front/my-angular-project/:/app
-      - ./front/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./front/my-angular-project/:/app    
     environment: 
       - VIRTUAL_HOST=prueba1.com
     networks:
@@ -75,8 +74,8 @@ services:
       MYSQL_ROOT_PASSWORD: 1234
       MYSQL_PASSWORD: 1234
       MYSQL_USER: admin      
-    # volumes:
-    #   - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    volumes:
+       - ./docker-compose/mysql:/docker-entrypoint-initdb.d
     networks:
       - net-prueba
 
